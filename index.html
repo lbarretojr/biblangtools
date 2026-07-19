@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblical Language Drill — Hebrew & Greek</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Spectral:wght@400;600&display=swap');
+
+  /* SBL BibLit — covers Hebrew, Greek, and Latin in one file.
+     Place SBL_BLit.ttf in the SAME folder as this HTML when hosting.
+     Include a copy of the SBL Font EULA in the folder too (license clause 3). */
+  @font-face{
+    font-family:'SBL BibLit';
+    src:url('SBL_BLit.ttf') format('truetype');
+    font-display:swap;
+  }
+
+  :root{
+    --bg:#ece7dc;--panel:#e2dccd;--panel2:#d7cfbb;--rule:#b3a789;--ink:#211c15;--dim:#6d6250;
+    --heb:#7c4a2d;--heb-soft:#a56a44;      /* sienna = Hebrew mode */
+    --grk:#2f5d72;--grk-soft:#4a7d94;      /* aegean = Greek mode */
+    --right:#3f6b4c;--wrong:#9a3b2e;
+    --accent:var(--heb);--accent-soft:var(--heb-soft); /* set by mode */
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);
+    background-image:radial-gradient(ellipse at 30% 15%, rgba(255,255,255,.35), transparent 60%),radial-gradient(ellipse at 85% 90%, rgba(0,0,0,.04), transparent 55%);
+    color:var(--ink);font-family:'Spectral',Georgia,serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+  .card{width:100%;max-width:560px;}
+  .glyph-font,.carrier,.glyph,.slowlist .ch{font-family:'SBL BibLit','Spectral',serif;}
+
+  /* ---- landing ---- */
+  .landing{text-align:center;}
+  .landing h1{font-weight:600;font-size:1.6rem;margin-bottom:.4rem;}
+  .landing .tag{font-family:'JetBrains Mono',monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.2em;color:var(--dim);margin-bottom:2rem;}
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.75rem;}
+  .choice{border:1.5px solid var(--rule);background:var(--panel);border-radius:4px;padding:2rem 1rem;cursor:pointer;transition:transform .1s ease,border-color .15s ease,background .15s ease;}
+  .choice:hover{transform:translateY(-2px);background:var(--panel2);}
+  .choice.heb:hover{border-color:var(--heb-soft);}
+  .choice.grk:hover{border-color:var(--grk-soft);}
+  .choice .big{font-family:'SBL BibLit','Spectral',serif;font-size:3.4rem;line-height:1;margin-bottom:.6rem;display:block;}
+  .choice.heb .big{color:var(--heb);}
+  .choice.grk .big{color:var(--grk);}
+  .choice .nm{font-weight:600;font-size:1.1rem;}
+  .choice .dsc{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin-top:.3rem;}
+  .landing .note{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--dim);line-height:1.6;opacity:.85;}
+
+  /* ---- drill ---- */
+  .drillview{display:none;}
+  .drillview.show{display:block;}
+  header{border-bottom:1.5px solid var(--accent);padding-bottom:.9rem;margin-bottom:1.3rem;display:flex;align-items:baseline;justify-content:space-between;gap:1rem;}
+  .htitle{font-weight:600;font-size:1.3rem;}
+  .htitle .lead{font-family:'SBL BibLit','Spectral',serif;color:var(--accent);margin-right:.5rem;font-size:1.5rem;}
+  .subtitle{font-family:'JetBrains Mono',monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.16em;color:var(--dim);}
+  .score{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--dim);text-align:right;white-space:nowrap;}
+  .progress{height:3px;background:var(--panel2);border-radius:2px;margin-bottom:1.3rem;overflow:hidden;}
+  .progress .bar{height:100%;background:var(--accent);width:0%;transition:width .25s ease;}
+  .glyphwrap{background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:2.4rem 1rem;text-align:center;position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,.4);}
+  .prompt-label{position:absolute;top:.7rem;left:0;right:0;font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.2em;color:var(--dim);}
+  .carrier,.glyph{font-size:7.5rem;line-height:1;}
+  .options{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin-top:1.25rem;}
+  button.opt{font-family:'Spectral',serif;font-size:1rem;background:var(--panel);border:1px solid var(--rule);color:var(--ink);padding:.8rem .5rem;border-radius:3px;cursor:pointer;transition:transform .08s ease,background .15s ease,border-color .15s ease;display:flex;flex-direction:column;gap:.12rem;align-items:center;}
+  button.opt .nm{font-weight:600;}
+  button.opt .snd{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--dim);}
+  button.opt:hover:not(:disabled){transform:translateY(-1px);border-color:var(--accent-soft);}
+  button.opt:disabled{cursor:default;}
+  button.opt.correct{background:#dfece0;border-color:var(--right);color:var(--right);}
+  button.opt.correct .snd{color:var(--right);}
+  button.opt.incorrect{background:#f0dcd6;border-color:var(--wrong);color:var(--wrong);}
+  button.opt.incorrect .snd{color:var(--wrong);}
+  .reveal{text-align:center;font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--dim);margin-top:1rem;min-height:1.2em;}
+  .reveal b{color:var(--ink);}
+  .footer{margin-top:1.4rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;}
+  .back{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;background:none;border:1px solid var(--rule);color:var(--dim);padding:.55rem .9rem;border-radius:3px;cursor:pointer;}
+  .back:hover{border-color:var(--accent-soft);color:var(--accent);}
+  .next{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;background:var(--accent);color:var(--bg);border:none;padding:.6rem 1.1rem;border-radius:3px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s ease;}
+  .next.show{opacity:1;pointer-events:auto;}
+
+  /* ---- summary ---- */
+  .summary{display:none;text-align:center;padding:.5rem 0;}
+  .summary.show{display:block;}
+  .summary h2{font-weight:600;font-size:1.3rem;margin-bottom:1.25rem;}
+  .bigstat{display:flex;justify-content:center;gap:2.5rem;margin-bottom:1.4rem;}
+  .bigstat .n{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:500;color:var(--accent);line-height:1;}
+  .bigstat .n.pass{color:var(--right);}
+  .bigstat .n.warn{color:var(--wrong);}
+  .bigstat .l{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dim);margin-top:.3rem;display:block;}
+  .verdict{font-size:1rem;margin-bottom:1.4rem;padding:.8rem;border-radius:3px;background:var(--panel);border:1px solid var(--rule);}
+  .verdict.ready{border-color:var(--right);background:#dfece0;color:var(--right);}
+  .slowlist{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--dim);margin-bottom:1.4rem;text-align:left;display:inline-block;}
+  .slowlist .row{display:flex;justify-content:space-between;gap:1.5rem;padding:.15rem 0;}
+  .slowlist .row .ch{font-size:1.1rem;color:var(--ink);}
+  .sumbtns{display:flex;gap:.7rem;justify-content:center;}
+  .restart{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;background:var(--accent);color:var(--bg);border:none;padding:.7rem 1.3rem;border-radius:3px;cursor:pointer;}
+  .foot-note{margin-top:1.1rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--dim);opacity:.7;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- LANDING -->
+  <div class="landing" id="landing">
+    <h1>Biblical Language Drill</h1>
+    <div class="tag">Recognition to automaticity · Hebrew &amp; Greek</div>
+    <div class="choices">
+      <div class="choice heb" onclick="startDrill('hebrew')">
+        <span class="big">אָ</span>
+        <div class="nm">Hebrew</div>
+        <div class="dsc">vowel points</div>
+      </div>
+      <div class="choice grk" onclick="startDrill('greek')">
+        <span class="big">Ω</span>
+        <div class="nm">Greek</div>
+        <div class="dsc">alphabet</div>
+      </div>
+    </div>
+    <div class="note">60 items · timed · nothing saved.<br>Each language runs its own separate session.</div>
+  </div>
+
+  <!-- DRILL -->
+  <div class="drillview" id="drillview">
+    <header>
+      <div>
+        <div class="htitle"><span class="lead" id="lead">אָ</span><span id="langName">Hebrew</span></div>
+        <div class="subtitle" id="subtitle">Name the vowel point · 60 items</div>
+      </div>
+      <div class="score" id="score">1 / 60</div>
+    </header>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div id="active">
+      <div class="glyphwrap">
+        <div class="prompt-label" id="promptLabel">which vowel is under / beside this letter?</div>
+        <div class="carrier glyph-font" id="glyph">מַ</div>
+      </div>
+      <div class="options" id="options"></div>
+      <div class="reveal" id="reveal"></div>
+      <div class="footer">
+        <button class="back" onclick="toLanding()">← switch</button>
+        <button class="next" id="next" onclick="advance()">Next →</button>
+      </div>
+    </div>
+    <div class="summary" id="summary">
+      <h2>Session complete</h2>
+      <div class="bigstat">
+        <div><span class="n" id="sumAcc">–</span><span class="l">accuracy</span></div>
+        <div><span class="n" id="sumTime">–</span><span class="l">avg sec / item</span></div>
+      </div>
+      <div class="verdict" id="verdict"></div>
+      <div class="slowlist" id="slowlist"></div>
+      <div class="sumbtns">
+        <button class="back" onclick="toLanding()">← switch language</button>
+        <button class="restart" onclick="restart()">Run another 60</button>
+      </div>
+    </div>
+    <div class="foot-note">Target: 90%+ accuracy &amp; under 2 sec/item. Recognition is step one — real reading is decoding words aloud, which no quiz can test.</div>
+  </div>
+</div>
+
+<script>
+const SESSION_LEN=60;
+
+const DATA={
+  hebrew:{
+    lead:"אָ", name:"Hebrew", subtitle:"Name the vowel point · 60 items",
+    promptLabel:"which vowel is under / beside this letter?",
+    accentVar:"--heb", accentSoftVar:"--heb-soft",
+    carriers:["\u05DE","\u05D1","\u05DC","\u05E0","\u05E7","\u05EA"],
+    items:[
+      {name:"qamats",snd:"a (â)",mark:"\u05B8"},
+      {name:"patach",snd:"a",mark:"\u05B7"},
+      {name:"segol",snd:"e",mark:"\u05B6"},
+      {name:"tsere",snd:"e (ē)",mark:"\u05B5"},
+      {name:"hireq",snd:"i",mark:"\u05B4"},
+      {name:"holem",snd:"o",mark:"\u05B9"},
+      {name:"qibbuts",snd:"u",mark:"\u05BB"},
+      {name:"shewa",snd:"ə / —",mark:"\u05B0"},
+    ],
+    confuse:{},
+    // renders carrier+mark
+    glyph:(it,car)=>car+it.mark,
+    chip:(it)=>"\u05DE"+it.mark,
+  },
+  greek:{
+    lead:"Ω", name:"Greek", subtitle:"Name the letter · 60 items",
+    promptLabel:"which letter is this?",
+    accentVar:"--grk", accentSoftVar:"--grk-soft",
+    carriers:null,
+    items:[
+      {name:"alpha",snd:"a",ch:"α"},{name:"beta",snd:"b",ch:"β"},
+      {name:"gamma",snd:"g",ch:"γ"},{name:"delta",snd:"d",ch:"δ"},
+      {name:"epsilon",snd:"e (short)",ch:"ε"},{name:"zeta",snd:"z / dz",ch:"ζ"},
+      {name:"eta",snd:"ē (long)",ch:"η"},{name:"theta",snd:"th",ch:"θ"},
+      {name:"iota",snd:"i",ch:"ι"},{name:"kappa",snd:"k",ch:"κ"},
+      {name:"lambda",snd:"l",ch:"λ"},{name:"mu",snd:"m",ch:"μ"},
+      {name:"nu",snd:"n",ch:"ν"},{name:"xi",snd:"x (ks)",ch:"ξ"},
+      {name:"omicron",snd:"o (short)",ch:"ο"},{name:"pi",snd:"p",ch:"π"},
+      {name:"rho",snd:"r",ch:"ρ"},{name:"sigma",snd:"s",ch:"σ"},
+      {name:"tau",snd:"t",ch:"τ"},{name:"upsilon",snd:"u / y",ch:"υ"},
+      {name:"phi",snd:"ph (f)",ch:"φ"},{name:"chi",snd:"ch (k)",ch:"χ"},
+      {name:"psi",snd:"ps",ch:"ψ"},{name:"omega",snd:"ō (long)",ch:"ω"},
+    ],
+    confuse:{eta:["epsilon"],epsilon:["eta"],omega:["omicron"],omicron:["omega"],chi:["kappa","xi"],xi:["chi","psi"],psi:["xi","phi"],theta:["omicron","phi"],zeta:["xi"],nu:["upsilon"],upsilon:["nu"],mu:["nu"],gamma:["rho"],rho:["gamma","pi"]},
+    glyph:(it)=>it.ch,
+    chip:(it)=>it.ch,
+  }
+};
+
+let mode=null, cfg=null, idx=0, hit=0, current=null, answered=false, qStart=0;
+let times={}, counts={}, misses={};
+const $=id=>document.getElementById(id);
+
+function setAccent(){
+  const rs=getComputedStyle(document.documentElement);
+  document.documentElement.style.setProperty('--accent', rs.getPropertyValue(cfg.accentVar));
+  document.documentElement.style.setProperty('--accent-soft', rs.getPropertyValue(cfg.accentSoftVar));
+}
+function startDrill(m){
+  mode=m; cfg=DATA[m];
+  idx=0;hit=0;times={};counts={};misses={};
+  setAccent();
+  $("landing").style.display="none";
+  $("drillview").classList.add("show");
+  $("summary").classList.remove("show");
+  $("active").style.display="block";
+  $("lead").textContent=cfg.lead;
+  $("langName").textContent=cfg.name;
+  $("subtitle").textContent=cfg.subtitle;
+  $("promptLabel").textContent=cfg.promptLabel;
+  render();
+}
+function toLanding(){
+  $("drillview").classList.remove("show");
+  $("landing").style.display="block";
+}
+function pick(){return cfg.items[Math.floor(Math.random()*cfg.items.length)];}
+function distractors(c){
+  const picks=[];
+  const paired=(cfg.confuse[c.name]||[]).map(nm=>cfg.items.find(l=>l.name===nm)).filter(Boolean);
+  for(let i=paired.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[paired[i],paired[j]]=[paired[j],paired[i]];}
+  paired.slice(0,2).forEach(p=>{if(!picks.find(x=>x.name===p.name))picks.push(p);});
+  const rest=cfg.items.filter(l=>l.name!==c.name&&!picks.find(x=>x.name===l.name));
+  for(let i=rest.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]];}
+  while(picks.length<3)picks.push(rest.pop());
+  return picks.slice(0,3);
+}
+function render(){
+  answered=false;current=pick();
+  const car=cfg.carriers?cfg.carriers[Math.floor(Math.random()*cfg.carriers.length)]:null;
+  $("glyph").textContent=cfg.glyph(current,car);
+  $("reveal").innerHTML="";$("next").classList.remove("show");
+  $("score").textContent=(idx+1)+" / "+SESSION_LEN;
+  $("bar").style.width=(idx/SESSION_LEN*100)+"%";
+  const opts=[current,...distractors(current)];
+  for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]];}
+  const box=$("options");box.innerHTML="";
+  opts.forEach(o=>{const b=document.createElement("button");b.className="opt";b.innerHTML=`<span class="nm">${o.name}</span><span class="snd">${o.snd}</span>`;b.onclick=()=>choose(b,o);box.appendChild(b);});
+  qStart=performance.now();
+}
+function choose(btn,opt){
+  if(answered)return;answered=true;
+  const el=(performance.now()-qStart)/1000;
+  times[current.name]=(times[current.name]||0)+el;counts[current.name]=(counts[current.name]||0)+1;
+  [...document.querySelectorAll(".opt")].forEach(b=>b.disabled=true);
+  if(opt.name===current.name){hit++;btn.classList.add("correct");$("reveal").innerHTML=`<b>${current.name}</b> — ${current.snd}. correct. <span style="opacity:.6">${el.toFixed(1)}s</span>`;}
+  else{misses[current.name]=(misses[current.name]||0)+1;btn.classList.add("incorrect");[...document.querySelectorAll(".opt")].find(b=>b.querySelector(".nm").textContent===current.name).classList.add("correct");$("reveal").innerHTML=`you chose <b>${opt.name}</b>. it was <b>${current.name}</b> — ${current.snd}.`;}
+  $("next").classList.add("show");
+}
+function advance(){idx++;if(idx>=SESSION_LEN){finish();}else{render();}}
+function finish(){
+  $("bar").style.width="100%";$("score").textContent=SESSION_LEN+" / "+SESSION_LEN;
+  $("active").style.display="none";$("summary").classList.add("show");
+  const acc=Math.round(hit/SESSION_LEN*100);
+  let tT=0,tC=0;Object.keys(times).forEach(k=>{tT+=times[k];tC+=counts[k];});
+  const avg=tC?tT/tC:0;
+  $("sumAcc").textContent=acc+"%";$("sumAcc").className="n "+(acc>=90?"pass":"warn");
+  $("sumTime").textContent=avg.toFixed(1);$("sumTime").className="n "+(avg<=2?"pass":"warn");
+  const ready=acc>=90&&avg<=2;const v=$("verdict");
+  if(ready){v.className="verdict ready";v.innerHTML="Fast <b>and</b> accurate. Take it into real text and read aloud.";}
+  else if(acc>=90){v.className="verdict";v.innerHTML="Accurate but not yet <b>fast</b> — still computing. Speed is the real bar.";}
+  else{v.className="verdict";v.innerHTML="Accuracy's the gap — read the character before you click.";}
+  const rows=Object.keys(times).map(k=>{const it=cfg.items.find(x=>x.name===k);return {name:k,chip:cfg.chip(it),avg:times[k]/counts[k],miss:misses[k]||0};}).sort((a,b)=>b.avg-a.avg).slice(0,3);
+  $("slowlist").innerHTML="<div style='margin-bottom:.4rem;letter-spacing:.12em'>SLOWEST THIS SESSION</div>"+rows.map(r=>`<div class="row"><span><span class="ch">${r.chip}</span> ${r.name}</span><span>${r.avg.toFixed(1)}s${r.miss?` · ${r.miss} miss`:""}</span></div>`).join("");
+}
+function restart(){startDrill(mode);}
+document.addEventListener("keydown",e=>{
+  if(!$("drillview").classList.contains("show"))return;
+  if((e.key==="Enter"||e.key===" ")&&answered){e.preventDefault();advance();}
+  if(["1","2","3","4"].includes(e.key)&&!answered){const b=document.querySelectorAll(".opt")[+e.key-1];if(b)b.click();}
+});
+</script>
+</body>
+</html>
