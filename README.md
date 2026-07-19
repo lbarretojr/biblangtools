@@ -10,13 +10,13 @@ No login, no tracking, no ads. It runs entirely in your browser and works on des
 - **Timed.** Every answer is timed. At the end of each session you'll see your accuracy, average response time, and the three characters that slowed you down the most.
 - **Session-only.** Nothing is saved or synced. Every session starts fresh. I chose not to keep persistent scores because the goal is improving recognition, not chasing numbers.
 
-## The target
+## What we're aiming for
 
 Aim for 90%+ accuracy while averaging under two seconds per item.
 
 If you're accurate but slow, you're still thinking through the answer instead of recognizing it automatically. Fast recognition is what eventually makes reading feel natural.
 
-## One limitation
+## What it doesn't do
 
 This drills recognition, not reading.
 
