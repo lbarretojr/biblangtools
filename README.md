@@ -1,12 +1,12 @@
 # Biblical Languages- Hebrew & Greek Alphabet Drills
 
-I built this because I wanted a simple way to brush up on my Hebrew and Greek after letting those skills get rusty for a few years. It's a browser-based recognition drill for rebuilding Biblical Hebrew vowel points and the Greek alphabet. Pick a language, complete a timed 60-item session, and see how you did.
+I built this because I wanted a simple way to brush up on my Hebrew and Greek after letting those skills get rusty for a few years. It's a browser-based recognition drill for rebuilding Biblical Hebrew vowel points, the Hebrew alphabet, and the Greek alphabet. Pick a language, complete a timed 60-item session, and see how you did.
 
 No login, no tracking, no ads. It runs entirely in your browser and works on desktop or mobile.
 
 ## What it does
 
-- **Two drills, one interface.** Choose Hebrew (vowel points) or Greek (alphabet) from the landing page. Each runs as its own 60-item session.
+- **Three drills, one interface.** Choose Hebrew Vowels (the 8 vowel points), Hebrew Letters (all 22 consonants plus the 5 final forms), or Greek (all 24 letters) from the landing page. Each runs as its own 60-item session.
 - **Timed.** Every answer is timed. At the end of each session you'll see your accuracy, average response time, and the three characters that slowed you down the most.
 - **Session-only.** Nothing is saved or synced. Every session starts fresh. I chose not to keep persistent scores because the goal is improving recognition, not chasing numbers.
 
@@ -22,7 +22,7 @@ This drills recognition, not reading.
 
 Recognizing a character is only the first step. The real skill is reading unfamiliar pointed or accented words out loud, and no multiple-choice drill can teach that. Use this to rebuild recognition speed, then spend time reading actual biblical texts.
 
-It's also not a course. Pair it with a real grammar — Pratico and Van Pelt for Hebrew, Mounce for Greek — and use this for the drilling those books can't do for you.
+It's also not a course. Pair it with a real grammar â Pratico and Van Pelt for Hebrew, Mounce for Greek â and use this for the drilling those books can't do for you.
 
 ## Files
 
@@ -46,7 +46,7 @@ Note: The `@font-face` rule in `index.html` expects the font file to be named `S
 ## Hosting on GitHub Pages
 
 1. Place `index.html`, `SBL_BLit.ttf`, and `SBL_Font_License.txt` in the repository root.
-2. Go to Settings → Pages.
+2. Go to Settings â Pages.
 3. Deploy from the `main` branch using the root folder.
 4. After a minute or two, your site should be available at:
 
@@ -58,6 +58,6 @@ If the Hebrew or Greek doesn't render correctly, the first thing to check is tha
 
 ## Notes
 
-- Number keys 1–4 select an answer.
+- Number keys 1-4 select an answer.
 - Enter or Space advances to the next item.
 - Hebrew and Greek are intentionally kept in separate sessions. Mixing scripts seemed to slow recognition when I tested it, so switching languages starts a new session instead.
