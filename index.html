@@ -35,6 +35,7 @@
   .landing h1{font-weight:600;font-size:1.6rem;margin-bottom:.4rem;}
   .landing .tag{font-family:'JetBrains Mono',monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.2em;color:var(--dim);margin-bottom:2rem;}
   .choices{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.75rem;}
+  .choice.wide{grid-column:1 / -1;}
   .choice{border:1.5px solid var(--rule);background:var(--panel);border-radius:4px;padding:2rem 1rem;cursor:pointer;transition:transform .1s ease,border-color .15s ease,background .15s ease;}
   .choice:hover{transform:translateY(-2px);background:var(--panel2);}
   .choice.heb:hover{border-color:var(--heb-soft);}
@@ -106,13 +107,18 @@
     <div class="choices">
       <div class="choice heb" onclick="startDrill('hebrew')">
         <span class="big">אָ</span>
-        <div class="nm">Hebrew</div>
+        <div class="nm">Hebrew Vowels</div>
         <div class="dsc">vowel points</div>
       </div>
       <div class="choice grk" onclick="startDrill('greek')">
         <span class="big">Ω</span>
         <div class="nm">Greek</div>
         <div class="dsc">alphabet</div>
+      </div>
+      <div class="choice heb wide" onclick="startDrill('hebrewalpha')">
+        <span class="big">א</span>
+        <div class="nm">Hebrew Letters</div>
+        <div class="dsc">22 letters + final forms</div>
       </div>
     </div>
     <div class="note">60 items · timed · nothing saved.<br>Each language runs its own separate session.</div>
@@ -180,6 +186,48 @@ const DATA={
     // renders carrier+mark
     glyph:(it,car)=>car+it.mark,
     chip:(it)=>"\u05DE"+it.mark,
+  },
+  hebrewalpha:{
+    lead:"\u05D0", name:"Hebrew Letters", subtitle:"Name the letter \u00B7 60 items",
+    promptLabel:"which letter is this?",
+    accentVar:"--heb", accentSoftVar:"--heb-soft",
+    carriers:null,
+    items:[
+      {name:"aleph",snd:"' (silent)",ch:"\u05D0"},{name:"bet",snd:"b / v",ch:"\u05D1"},
+      {name:"gimel",snd:"g",ch:"\u05D2"},{name:"dalet",snd:"d",ch:"\u05D3"},
+      {name:"he",snd:"h",ch:"\u05D4"},{name:"vav",snd:"v / w",ch:"\u05D5"},
+      {name:"zayin",snd:"z",ch:"\u05D6"},{name:"het",snd:"ch (guttural)",ch:"\u05D7"},
+      {name:"tet",snd:"t (emphatic)",ch:"\u05D8"},{name:"yod",snd:"y",ch:"\u05D9"},
+      {name:"kaf",snd:"k / kh",ch:"\u05DB"},{name:"lamed",snd:"l",ch:"\u05DC"},
+      {name:"mem",snd:"m",ch:"\u05DE"},{name:"nun",snd:"n",ch:"\u05E0"},
+      {name:"samekh",snd:"s",ch:"\u05E1"},{name:"ayin",snd:"' (silent)",ch:"\u05E2"},
+      {name:"pe",snd:"p / f",ch:"\u05E4"},{name:"tsadi",snd:"ts",ch:"\u05E6"},
+      {name:"qof",snd:"q",ch:"\u05E7"},{name:"resh",snd:"r",ch:"\u05E8"},
+      {name:"shin",snd:"sh / s",ch:"\u05E9"},{name:"tav",snd:"t",ch:"\u05EA"},
+      {name:"kaf sofit",snd:"k / kh (final)",ch:"\u05DA"},
+      {name:"mem sofit",snd:"m (final)",ch:"\u05DD"},
+      {name:"nun sofit",snd:"n (final)",ch:"\u05DF"},
+      {name:"pe sofit",snd:"p / f (final)",ch:"\u05E3"},
+      {name:"tsadi sofit",snd:"ts (final)",ch:"\u05E5"},
+    ],
+    confuse:{
+      bet:["kaf"],kaf:["bet","nun","kaf sofit"],
+      dalet:["resh"],resh:["dalet","kaf","qof"],
+      he:["het","tav"],het:["he","tav"],tav:["he","het"],
+      vav:["zayin","yod","nun sofit"],zayin:["vav"],
+      yod:["vav","nun sofit"],
+      nun:["vav","gimel","kaf"],gimel:["nun"],
+      mem:["samekh","tet","mem sofit"],samekh:["mem"],
+      ayin:["tsadi"],tsadi:["ayin","tsadi sofit"],
+      pe:["pe sofit"],"pe sofit":["pe","nun sofit"],
+      "kaf sofit":["kaf","nun sofit"],
+      "mem sofit":["mem","samekh"],
+      "nun sofit":["nun","vav","yod"],
+      "tsadi sofit":["tsadi","ayin"],
+      tet:["mem","het"],qof:["resh"],
+    },
+    glyph:(it)=>it.ch,
+    chip:(it)=>it.ch,
   },
   greek:{
     lead:"Ω", name:"Greek", subtitle:"Name the letter · 60 items",
