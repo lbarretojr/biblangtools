@@ -1,4 +1,4 @@
-# Biblical Language Drill — Hebrew & Greek
+# Biblical Languages- Hebrew & Greek Alphabet Drills
 
 I built this because I wanted a simple way to brush up on my Hebrew and Greek after letting those skills get rusty for a few years. It's a browser-based recognition drill for rebuilding Biblical Hebrew vowel points and the Greek alphabet. Pick a language, complete a timed 60-item session, and see how you did.
 
